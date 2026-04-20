@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>F1 Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;500;600;700&family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            f1: {
+              red: '#E10600',
+              darkred: '#B00500',
+              bg: '#0C0C0C',
+              surface: '#151515',
+              card: '#1A1A1A',
+              cardHover: '#222222',
+              border: '#2A2A2A',
+              muted: '#6B6B6B',
+              text: '#F0F0F0',
+              dimtext: '#A0A0A0',
+            }
+          },
+          fontFamily: {
+            heading: ['"Libre Bodoni"', 'Georgia', 'serif'],
+            body: ['"Public Sans"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-f1-bg text-f1-text font-body antialiased">
+
+  <!-- Top Nav -->
+  <header class="sticky top-0 z-50 bg-f1-bg/95 backdrop-blur-sm border-b border-f1-border">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-f1-red rounded-sm flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-5 h-5 text-white" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <h1 class="font-heading text-xl font-bold tracking-tight">F1 <span class="text-f1-red">Dashboard</span></h1>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-f1-dimtext">
+        <a href="#news" class="hover:text-f1-text transition-colors cursor-pointer">News</a>
+        <a href="#calendar" class="hover:text-f1-text transition-colors cursor-pointer">Calendar</a>
+        <a href="#drivers" class="hover:text-f1-text transition-colors cursor-pointer">Drivers</a>
+        <a href="#constructors" class="hover:text-f1-text transition-colors cursor-pointer">Constructors</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <span id="live-indicator" class="hidden items-center gap-1.5 text-xs font-semibold text-f1-red">
+          <span class="w-2 h-2 bg-f1-red rounded-full animate-pulse"></span> LIVE
+        </span>
+        <span id="season-label" class="text-xs text-f1-muted font-medium">2025 Season</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid -->
+  <main class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+
+    <!-- Hero: Featured News -->
+    <section id="hero" class="mb-8">
+      <div id="hero-content" class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
+        <!-- Main hero story -->
+        <article id="hero-main" class="lg:col-span-7 relative group cursor-pointer overflow-hidden rounded-lg bg-f1-card border border-f1-border hover:border-f1-red/40 transition-all duration-300">
+          <div class="aspect-[16/9] bg-f1-surface shimmer"></div>
+          <div class="p-5 lg:p-6">
+            <span class="inline-block px-2 py-0.5 bg-f1-red text-white text-[10px] font-bold uppercase tracking-wider rounded-sm mb-3">Breaking</span>
+            <h2 class="font-heading text-2xl lg:text-3xl font-bold leading-tight mb-2 shimmer-text" style="min-height:2.4em"></h2>
+            <p class="text-f1-dimtext text-sm leading-relaxed shimmer-text" style="min-height:1.2em"></p>
+            <div class="mt-4 flex items-center gap-2 text-xs text-f1-muted">
+              <span class="shimmer-text" style="min-width:80px">&nbsp;</span>
+              <span>&middot;</span>
+              <span class="shimmer-text" style="min-width:60px">&nbsp;</span>
+            </div>
+          </div>
+        </article>
+        <!-- Side stories -->
+        <div id="hero-side" class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+          <article class="bg-f1-card border border-f1-border rounded-lg p-4 shimmer-block" style="min-height:120px"></article>
+          <article class="bg-f1-card border border-f1-border rounded-lg p-4 shimmer-block" style="min-height:120px"></article>
+          <article class="hidden lg:block bg-f1-card border border-f1-border rounded-lg p-4 shimmer-block" style="min-height:120px"></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Divider -->
+    <div class="flex items-center gap-4 mb-6">
+      <div class="h-px flex-1 bg-f1-border"></div>
+      <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-f1-muted">Latest Coverage</span>
+      <div class="h-px flex-1 bg-f1-border"></div>
+    </div>
+
+    <!-- Editorial Grid: News + Calendar + Standings -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+
+      <!-- Left Column: News Feed -->
+      <section id="news" class="lg:col-span-7 xl:col-span-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-heading text-lg font-bold">News Feed</h2>
+          <div id="news-filters" class="flex gap-1 text-xs">
+            <button class="news-filter active px-2.5 py-1 rounded-full bg-f1-red text-white font-medium cursor-pointer transition-all duration-200" data-filter="all">All</button>
+            <button class="news-filter px-2.5 py-1 rounded-full bg-f1-surface text-f1-dimtext hover:text-f1-text font-medium cursor-pointer transition-all duration-200" data-filter="race">Races</button>
+            <button class="news-filter px-2.5 py-1 rounded-full bg-f1-surface text-f1-dimtext hover:text-f1-text font-medium cursor-pointer transition-all duration-200" data-filter="team">Teams</button>
+            <button class="news-filter px-2.5 py-1 rounded-full bg-f1-surface text-f1-dimtext hover:text-f1-text font-medium cursor-pointer transition-all duration-200" data-filter="driver">Drivers</button>
+          </div>
+        </div>
+        <div id="news-feed" class="space-y-4">
+          <!-- Skeleton loaders -->
+          <div class="bg-f1-card border border-f1-border rounded-lg p-4 shimmer-block" style="min-height:100px"></div>
+          <div class="bg-f1-card border border-f1-border rounded-lg p-4 shimmer-block" style="min-height:100px"></div>
+          <div class="bg-f1-card border border-f1-border rounded-lg p-4 shimmer-block" style="min-height:100px"></div>
+          <div class="bg-f1-card border border-f1-border rounded-lg p-4 shimmer-block" style="min-height:100px"></div>
+          <div class="bg-f1-card border border-f1-border rounded-lg p-4 shimmer-block" style="min-height:100px"></div>
+        </div>
+        <button id="load-more-news" class="hidden w-full mt-4 py-2.5 border border-f1-border rounded-lg text-sm font-medium text-f1-dimtext hover:text-f1-text hover:border-f1-muted transition-all duration-200 cursor-pointer">
+          Load more stories
+        </button>
+      </section>
+
+      <!-- Right Column: Calendar + Standings -->
+      <aside class="lg:col-span-5 xl:col-span-4 space-y-6">
+
+        <!-- Next Race Card -->
+        <div id="next-race" class="bg-f1-card border border-f1-border rounded-lg overflow-hidden">
+          <div class="bg-f1-red px-4 py-2.5 flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-white">Next Race</span>
+            <span id="next-race-countdown" class="text-xs font-bold text-white/90"></span>
+          </div>
+          <div class="p-4">
+            <div id="next-race-info" class="shimmer-block" style="min-height:80px"></div>
+          </div>
+        </div>
+
+        <!-- Race Calendar -->
+        <div id="calendar" class="bg-f1-card border border-f1-border rounded-lg overflow-hidden">
+          <div class="px-4 py-3 border-b border-f1-border flex items-center justify-between">
+            <h3 class="font-heading text-base font-bold">Race Calendar</h3>
+            <span id="calendar-progress" class="text-[10px] font-medium text-f1-muted"></span>
+          </div>
+          <div id="calendar-list" class="divide-y divide-f1-border max-h-[420px] overflow-y-auto scrollbar-thin">
+            <div class="p-4 shimmer-block" style="min-height:300px"></div>
+          </div>
+        </div>
+
+        <!-- Standings Tabs -->
+        <div class="bg-f1-card border border-f1-border rounded-lg overflow-hidden">
+          <div class="flex border-b border-f1-border">
+            <button id="tab-drivers" class="standings-tab flex-1 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-f1-red border-b-2 border-f1-red cursor-pointer transition-all duration-200" data-tab="drivers">
+              Drivers
+            </button>
+            <button id="tab-constructors" class="standings-tab flex-1 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-f1-muted border-b-2 border-transparent hover:text-f1-dimtext cursor-pointer transition-all duration-200" data-tab="constructors">
+              Constructors
+            </button>
+          </div>
+          <div id="drivers-standings" class="standings-panel divide-y divide-f1-border max-h-[480px] overflow-y-auto scrollbar-thin">
+            <div class="p-4 shimmer-block" style="min-height:300px"></div>
+          </div>
+          <div id="constructors-standings" class="standings-panel hidden divide-y divide-f1-border max-h-[480px] overflow-y-auto scrollbar-thin">
+            <div class="p-4 shimmer-block" style="min-height:300px"></div>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-f1-border mt-12 py-6">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-f1-muted">
+      <span>F1 Dashboard &mdash; Data from Jolpica F1 API &amp; Google News</span>
+      <span>Not affiliated with Formula 1 or FIA</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

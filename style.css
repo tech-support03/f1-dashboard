@@ -1,0 +1,145 @@
+/* === F1 Dashboard — Editorial Magazine Styles === */
+
+/* Scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #2A2A2A;
+  border-radius: 2px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #3A3A3A;
+}
+
+/* Shimmer loading animation */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #1A1A1A 25%, #252525 50%, #1A1A1A 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.shimmer-block {
+  background: linear-gradient(90deg, #1A1A1A 25%, #222222 50%, #1A1A1A 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+.shimmer-text {
+  background: linear-gradient(90deg, #252525 25%, #303030 50%, #252525 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+  display: inline-block;
+  width: 100%;
+}
+
+/* News card hover */
+.news-card {
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.news-card:hover {
+  border-color: rgba(225, 6, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Standings row */
+.standings-row {
+  transition: background-color 0.15s ease;
+}
+.standings-row:hover {
+  background-color: #1F1F1F;
+}
+
+/* Calendar row */
+.calendar-row {
+  transition: background-color 0.15s ease;
+}
+.calendar-row:hover {
+  background-color: #1F1F1F;
+}
+.calendar-row.past {
+  opacity: 0.45;
+}
+.calendar-row.next {
+  border-left: 3px solid #E10600;
+  background-color: rgba(225, 6, 0, 0.06);
+}
+
+/* Podium colors */
+.pos-1 { color: #FFD700; }
+.pos-2 { color: #C0C0C0; }
+.pos-3 { color: #CD7F32; }
+
+/* Team color indicators */
+.team-color {
+  width: 3px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Drop cap for hero */
+.drop-cap::first-letter {
+  font-family: 'Libre Bodoni', Georgia, serif;
+  font-size: 3.2em;
+  float: left;
+  line-height: 0.8;
+  margin-right: 0.08em;
+  margin-top: 0.05em;
+  color: #E10600;
+}
+
+/* Pulse for live indicator */
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Filter active state */
+.news-filter.active {
+  background-color: #E10600;
+  color: white;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus visible */
+*:focus-visible {
+  outline: 2px solid #E10600;
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .shimmer, .shimmer-block, .shimmer-text {
+    animation: none;
+  }
+  .news-card:hover {
+    transform: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Mobile nav toggle (for smaller screens) */
+@media (max-width: 767px) {
+  .standings-panel {
+    max-height: 360px;
+  }
+  #calendar-list {
+    max-height: 320px;
+  }
+}
