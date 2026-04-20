@@ -246,7 +246,6 @@ async function loadCalendar() {
     try {
       const data = await fetchJSON(`${API_BASE}/${CURRENT_YEAR - 1}.json`);
       races = data.MRData?.RaceTable?.Races || [];
-      document.getElementById('season-label').textContent = `${CURRENT_YEAR - 1} Season`;
       renderCalendar();
       renderNextRace();
     } catch {
@@ -446,6 +445,149 @@ function renderConstructorStandings(standings, panel) {
   }).join('');
 }
 
+// ── RACE WEEKEND ──
+
+let nextRaceRound = null;
+
+function findNextRaceRound() {
+  const now = new Date();
+  const next = races.find(r => new Date(`${r.date}T${r.time || '14:00:00Z'}`) > now);
+  if (next) {
+    nextRaceRound = next.round;
+    return next;
+  }
+  // If season is over, show the last race
+  if (races.length > 0) {
+    const last = races[races.length - 1];
+    nextRaceRound = last.round;
+    return last;
+  }
+  return null;
+}
+
+async function loadRaceWeekend() {
+  const panel = document.getElementById('raceweekend-standings');
+  const race = findNextRaceRound();
+  if (!race) {
+    panel.innerHTML = '<p class="p-4 text-f1-muted text-sm">No race weekend data available</p>';
+    return;
+  }
+
+  const round = nextRaceRound;
+  const year = CURRENT_YEAR;
+  const flag = countryFlag(race.Circuit?.Location?.country || race.raceName);
+
+  // Build session schedule from the race data
+  const sessions = [];
+  if (race.FirstPractice) sessions.push({ name: 'Practice 1', date: race.FirstPractice.date, time: race.FirstPractice.time });
+  if (race.SecondPractice) sessions.push({ name: 'Practice 2', date: race.SecondPractice.date, time: race.SecondPractice.time });
+  if (race.ThirdPractice) sessions.push({ name: 'Practice 3', date: race.ThirdPractice.date, time: race.ThirdPractice.time });
+  if (race.Sprint) sessions.push({ name: 'Sprint', date: race.Sprint.date, time: race.Sprint.time });
+  if (race.SprintQualifying) sessions.push({ name: 'Sprint Qualifying', date: race.SprintQualifying.date, time: race.SprintQualifying.time });
+  if (race.SprintShootout) sessions.push({ name: 'Sprint Shootout', date: race.SprintShootout.date, time: race.SprintShootout.time });
+  if (race.Qualifying) sessions.push({ name: 'Qualifying', date: race.Qualifying.date, time: race.Qualifying.time });
+  sessions.push({ name: 'Race', date: race.date, time: race.time });
+
+  // Sort sessions chronologically
+  sessions.sort((a, b) => new Date(`${a.date}T${a.time || '00:00:00Z'}`) - new Date(`${b.date}T${b.time || '00:00:00Z'}`));
+
+  const now = new Date();
+
+  // Try to load results for past sessions
+  const [qualifyingResult, raceResult, sprintResult] = await Promise.allSettled([
+    fetchJSON(`${API_BASE}/${year}/${round}/qualifying.json`),
+    fetchJSON(`${API_BASE}/${year}/${round}/results.json`),
+    fetchJSON(`${API_BASE}/${year}/${round}/sprint.json`),
+  ]);
+
+  const qualiData = qualifyingResult.status === 'fulfilled' ? qualifyingResult.value?.MRData?.RaceTable?.Races?.[0]?.QualifyingResults : null;
+  const raceData = raceResult.status === 'fulfilled' ? raceResult.value?.MRData?.RaceTable?.Races?.[0]?.Results : null;
+  const sprintData = sprintResult.status === 'fulfilled' ? sprintResult.value?.MRData?.RaceTable?.Races?.[0]?.SprintResults : null;
+
+  let html = `
+    <div class="px-4 py-3 border-b border-f1-border">
+      <div class="flex items-center gap-2">
+        <span class="text-xl" aria-hidden="true">${flag}</span>
+        <div>
+          <h4 class="font-heading text-sm font-bold">${race.raceName}</h4>
+          <p class="text-[11px] text-f1-muted">${race.Circuit?.circuitName || ''} &mdash; Round ${round}</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Render each session
+  html += '<div class="divide-y divide-f1-border">';
+  for (const session of sessions) {
+    const sessionDate = new Date(`${session.date}T${session.time || '00:00:00Z'}`);
+    const isPast = sessionDate < now;
+    const localDate = sessionDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const localTime = session.time ? sessionDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }) : 'TBD';
+
+    // Check if we have results for this session
+    let resultsHtml = '';
+    if (session.name === 'Qualifying' && qualiData && qualiData.length > 0) {
+      resultsHtml = renderSessionResults(qualiData.slice(0, 5), 'qualifying');
+    } else if (session.name === 'Race' && raceData && raceData.length > 0) {
+      resultsHtml = renderSessionResults(raceData.slice(0, 5), 'race');
+    } else if (session.name === 'Sprint' && sprintData && sprintData.length > 0) {
+      resultsHtml = renderSessionResults(sprintData.slice(0, 5), 'race');
+    }
+
+    const statusBadge = isPast && resultsHtml
+      ? '<span class="text-[10px] font-bold text-green-400 bg-green-400/10 px-1.5 py-0.5 rounded">RESULTS</span>'
+      : isPast
+      ? '<span class="text-[10px] font-bold text-f1-muted bg-f1-surface px-1.5 py-0.5 rounded">DONE</span>'
+      : '<span class="text-[10px] font-bold text-f1-red bg-f1-red/10 px-1.5 py-0.5 rounded">UPCOMING</span>';
+
+    html += `
+      <div class="px-4 py-3">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-sm font-semibold">${session.name}</span>
+          ${statusBadge}
+        </div>
+        <div class="flex items-center gap-3 text-[11px] text-f1-muted">
+          <span>${localDate}</span>
+          <span>${localTime}</span>
+        </div>
+        ${resultsHtml}
+      </div>
+    `;
+  }
+  html += '</div>';
+
+  panel.innerHTML = html;
+}
+
+function renderSessionResults(results, type) {
+  let html = '<div class="mt-2 space-y-1">';
+  for (const r of results) {
+    const pos = r.position;
+    const driver = r.Driver;
+    const constructor = r.Constructor;
+    const teamColor = getTeamColor(constructor?.constructorId, constructor?.name);
+    const posClass = parseInt(pos) <= 3 ? `pos-${pos}` : 'text-f1-muted';
+
+    let detail = '';
+    if (type === 'qualifying') {
+      detail = r.Q3 || r.Q2 || r.Q1 || '';
+    } else {
+      detail = r.Time?.time || r.status || '';
+    }
+
+    html += `
+      <div class="flex items-center gap-2 text-xs">
+        <span class="w-5 text-center font-bold ${posClass}">${pos}</span>
+        <div class="team-color h-4" style="background:${teamColor}"></div>
+        <span class="flex-1 truncate font-medium">${driver.code || driver.familyName}</span>
+        <span class="text-f1-dimtext tabular-nums text-[11px]">${detail}</span>
+      </div>
+    `;
+  }
+  html += '</div>';
+  return html;
+}
+
 // ── STANDINGS TABS ──
 
 document.querySelectorAll('.standings-tab').forEach(tab => {
@@ -465,11 +607,13 @@ document.querySelectorAll('.standings-tab').forEach(tab => {
 // ── INIT ──
 
 (async function init() {
-  // Load all data in parallel
+  // Load all data in parallel (calendar first since race weekend depends on it)
   await Promise.allSettled([
     loadNews(),
     loadCalendar(),
     loadDriverStandings(),
     loadConstructorStandings(),
   ]);
+  // Race weekend depends on calendar being loaded
+  await loadRaceWeekend();
 })();
