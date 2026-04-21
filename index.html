@@ -130,6 +130,30 @@
           </div>
         </div>
 
+        <!-- Standings + Race Weekend Tabs -->
+        <div class="bg-f1-card border border-f1-border rounded-lg overflow-hidden">
+          <div class="flex border-b border-f1-border">
+            <button id="tab-raceweekend" class="standings-tab flex-1 px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-f1-red border-b-2 border-f1-red cursor-pointer transition-all duration-200" data-tab="raceweekend">
+              Race Weekend
+            </button>
+            <button id="tab-drivers" class="standings-tab flex-1 px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-f1-muted border-b-2 border-transparent hover:text-f1-dimtext cursor-pointer transition-all duration-200" data-tab="drivers">
+              Drivers
+            </button>
+            <button id="tab-constructors" class="standings-tab flex-1 px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-f1-muted border-b-2 border-transparent hover:text-f1-dimtext cursor-pointer transition-all duration-200" data-tab="constructors">
+              Constructors
+            </button>
+          </div>
+          <div id="raceweekend-standings" class="standings-panel max-h-[520px] overflow-y-auto scrollbar-thin">
+            <div class="p-4 shimmer-block" style="min-height:300px"></div>
+          </div>
+          <div id="drivers-standings" class="standings-panel hidden divide-y divide-f1-border max-h-[480px] overflow-y-auto scrollbar-thin">
+            <div class="p-4 shimmer-block" style="min-height:300px"></div>
+          </div>
+          <div id="constructors-standings" class="standings-panel hidden divide-y divide-f1-border max-h-[480px] overflow-y-auto scrollbar-thin">
+            <div class="p-4 shimmer-block" style="min-height:300px"></div>
+          </div>
+        </div>
+
         <!-- Race Calendar -->
         <div id="calendar" class="bg-f1-card border border-f1-border rounded-lg overflow-hidden">
           <div class="px-4 py-3 border-b border-f1-border flex items-center justify-between">
@@ -137,30 +161,6 @@
             <span id="calendar-progress" class="text-[10px] font-medium text-f1-muted"></span>
           </div>
           <div id="calendar-list" class="divide-y divide-f1-border max-h-[420px] overflow-y-auto scrollbar-thin">
-            <div class="p-4 shimmer-block" style="min-height:300px"></div>
-          </div>
-        </div>
-
-        <!-- Standings + Race Weekend Tabs -->
-        <div class="bg-f1-card border border-f1-border rounded-lg overflow-hidden">
-          <div class="flex border-b border-f1-border">
-            <button id="tab-drivers" class="standings-tab flex-1 px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-f1-red border-b-2 border-f1-red cursor-pointer transition-all duration-200" data-tab="drivers">
-              Drivers
-            </button>
-            <button id="tab-constructors" class="standings-tab flex-1 px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-f1-muted border-b-2 border-transparent hover:text-f1-dimtext cursor-pointer transition-all duration-200" data-tab="constructors">
-              Constructors
-            </button>
-            <button id="tab-raceweekend" class="standings-tab flex-1 px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-f1-muted border-b-2 border-transparent hover:text-f1-dimtext cursor-pointer transition-all duration-200" data-tab="raceweekend">
-              Race Weekend
-            </button>
-          </div>
-          <div id="drivers-standings" class="standings-panel divide-y divide-f1-border max-h-[480px] overflow-y-auto scrollbar-thin">
-            <div class="p-4 shimmer-block" style="min-height:300px"></div>
-          </div>
-          <div id="constructors-standings" class="standings-panel hidden divide-y divide-f1-border max-h-[480px] overflow-y-auto scrollbar-thin">
-            <div class="p-4 shimmer-block" style="min-height:300px"></div>
-          </div>
-          <div id="raceweekend-standings" class="standings-panel hidden max-h-[520px] overflow-y-auto scrollbar-thin">
             <div class="p-4 shimmer-block" style="min-height:300px"></div>
           </div>
         </div>
