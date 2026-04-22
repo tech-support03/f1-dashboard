@@ -153,8 +153,17 @@ function renderHero() {
   const sideEl = document.getElementById('hero-side');
   if (allNewsItems.length === 0) return;
 
-  const hero = allNewsItems[0];
-  const sideItems = allNewsItems.slice(1, 4);
+  // Prioritize articles with thumbnails for the top 4 hero slots
+  const withImg = allNewsItems.filter(n => n.thumbnail);
+  const withoutImg = allNewsItems.filter(n => !n.thumbnail);
+  const heroPool = [...withImg, ...withoutImg];
+  const hero = heroPool[0];
+  const sideItems = heroPool.slice(1, 4);
+
+  // Rebuild allNewsItems so the rest of the feed excludes the hero picks
+  const heroSet = new Set([hero, ...sideItems]);
+  const remaining = allNewsItems.filter(n => !heroSet.has(n));
+  allNewsItems = [hero, ...sideItems, ...remaining];
 
   mainEl.innerHTML = `
     <a href="${hero.link}" target="_blank" rel="noopener noreferrer" class="block">
