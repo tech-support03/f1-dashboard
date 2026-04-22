@@ -158,7 +158,7 @@ function renderHero() {
 
   mainEl.innerHTML = `
     <a href="${hero.link}" target="_blank" rel="noopener noreferrer" class="block">
-      ${hero.thumbnail ? `<div class="aspect-[16/9] overflow-hidden"><img src="${hero.thumbnail}" alt="" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" loading="lazy" /></div>` : `<div class="aspect-[16/9] bg-gradient-to-br from-f1-red/20 to-f1-surface flex items-center justify-center"><svg class="w-16 h-16 text-f1-red/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg></div>`}
+      ${hero.thumbnail ? `<div class="aspect-[16/9] overflow-hidden"><img src="${hero.thumbnail}" alt="" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" loading="lazy" onerror="this.parentElement.remove()" /></div>` : ''}
       <div class="p-5 lg:p-6">
         <span class="inline-block px-2 py-0.5 bg-f1-red text-white text-[10px] font-bold uppercase tracking-wider rounded-sm mb-3">Latest</span>
         <h2 class="font-heading text-2xl lg:text-3xl font-bold leading-tight mb-2">${hero.title}</h2>
@@ -174,7 +174,7 @@ function renderHero() {
 
   sideEl.innerHTML = sideItems.map((item, i) => `
     <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="news-card bg-f1-card border border-f1-border rounded-lg p-4 flex gap-3 cursor-pointer group">
-      ${item.thumbnail ? `<div class="w-20 h-20 flex-shrink-0 rounded overflow-hidden"><img src="${item.thumbnail}" alt="" class="w-full h-full object-cover" loading="lazy" /></div>` : `<div class="w-20 h-20 flex-shrink-0 rounded bg-f1-surface flex items-center justify-center"><span class="text-2xl font-heading font-bold text-f1-border">${i + 2}</span></div>`}
+      ${item.thumbnail ? `<div class="w-20 h-20 flex-shrink-0 rounded overflow-hidden"><img src="${item.thumbnail}" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.remove()" /></div>` : ''}
       <div class="flex-1 min-w-0">
         <h3 class="font-heading text-sm font-bold leading-snug line-clamp-2 group-hover:text-f1-red transition-colors duration-200">${item.title}</h3>
         <div class="mt-2 flex items-center gap-2 text-[11px] text-f1-muted">
@@ -200,7 +200,7 @@ function renderMoreNews(filter = 'all') {
   feedEl.innerHTML = toShow.map(item => `
     <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="news-card block bg-f1-card border border-f1-border rounded-lg p-4 cursor-pointer">
       <div class="flex gap-4">
-        ${item.thumbnail ? `<div class="w-24 h-[72px] flex-shrink-0 rounded overflow-hidden hidden sm:block"><img src="${item.thumbnail}" alt="" class="w-full h-full object-cover" loading="lazy" /></div>` : ''}
+        ${item.thumbnail ? `<div class="w-24 h-[72px] flex-shrink-0 rounded overflow-hidden hidden sm:block"><img src="${item.thumbnail}" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.remove()" /></div>` : ''}
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-1.5">
             <span class="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-sm ${
