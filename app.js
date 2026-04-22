@@ -93,7 +93,7 @@ async function loadNews() {
         pubDate: item.pubDate ? new Date(item.pubDate) : new Date(),
         source: extractSource(item.author || item.title || ''),
         description: stripHtml(item.description || item.content || '').slice(0, 200),
-        thumbnail: item.thumbnail || item.enclosure?.link || '',
+        thumbnail: item.thumbnail || item.enclosure?.link || extractImageFromHtml(item.description || '') || extractImageFromHtml(item.content || '') || '',
         category: categorizeNews(item.title + ' ' + (item.description || '')),
       });
     }
@@ -109,6 +109,20 @@ function extractSource(text) {
   // Google News items often have source in author
   if (text.includes(' - ')) return text.split(' - ').pop().trim();
   return text.slice(0, 30);
+}
+
+function extractImageFromHtml(html) {
+  if (!html) return '';
+  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  if (match && match[1]) {
+    const src = match[1];
+    // Skip tiny tracking pixels and icons
+    if (src.includes('1x1') || src.includes('pixel') || src.includes('tracker')) return '';
+    return src;
+  }
+  // Also check for og:image style urls or media:content
+  const mediaMatch = html.match(/url=["']?([^"'\s>]+\.(jpg|jpeg|png|webp))/i);
+  return mediaMatch ? mediaMatch[1] : '';
 }
 
 function stripHtml(html) {

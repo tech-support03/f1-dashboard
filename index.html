@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>F1 Dashboard</title>
+  <title>THE GRID — Formula 1 Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -41,15 +41,34 @@
   <!-- Top Nav -->
   <header class="sticky top-0 z-50 bg-f1-bg/95 backdrop-blur-sm border-b border-f1-border">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 bg-f1-red rounded-sm flex items-center justify-center">
-          <svg viewBox="0 0 24 24" class="w-5 h-5 text-white" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-        </div>
-        <h1 class="font-heading text-xl font-bold tracking-tight">F1 <span class="text-f1-red">Dashboard</span></h1>
+      <div class="flex items-center gap-2.5">
+        <!-- Checkered flag logo -->
+        <svg viewBox="0 0 28 28" class="w-7 h-7 flex-shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="7" height="7" fill="#E10600"/>
+          <rect x="14" y="0" width="7" height="7" fill="#E10600"/>
+          <rect x="7" y="7" width="7" height="7" fill="#E10600"/>
+          <rect x="21" y="7" width="7" height="7" fill="#E10600"/>
+          <rect x="0" y="14" width="7" height="7" fill="#E10600"/>
+          <rect x="14" y="14" width="7" height="7" fill="#E10600"/>
+          <rect x="7" y="21" width="7" height="7" fill="#E10600"/>
+          <rect x="21" y="21" width="7" height="7" fill="#E10600"/>
+          <rect x="7" y="0" width="7" height="7" fill="#2A2A2A"/>
+          <rect x="21" y="0" width="7" height="7" fill="#2A2A2A"/>
+          <rect x="0" y="7" width="7" height="7" fill="#2A2A2A"/>
+          <rect x="14" y="7" width="7" height="7" fill="#2A2A2A"/>
+          <rect x="7" y="14" width="7" height="7" fill="#2A2A2A"/>
+          <rect x="21" y="14" width="7" height="7" fill="#2A2A2A"/>
+          <rect x="0" y="21" width="7" height="7" fill="#2A2A2A"/>
+          <rect x="14" y="21" width="7" height="7" fill="#2A2A2A"/>
+        </svg>
+        <h1 class="font-heading text-xl font-bold tracking-[-0.03em]">THE <span class="text-f1-red">GRID</span></h1>
       </div>
-      <span id="live-indicator" class="hidden items-center gap-1.5 text-xs font-semibold text-f1-red">
-        <span class="w-2 h-2 bg-f1-red rounded-full animate-pulse"></span> LIVE
-      </span>
+      <div class="flex items-center gap-3">
+        <span id="live-indicator" class="hidden items-center gap-1.5 text-xs font-semibold text-f1-red">
+          <span class="w-2 h-2 bg-f1-red rounded-full animate-pulse"></span> LIVE
+        </span>
+        <span class="text-[10px] font-medium uppercase tracking-[0.15em] text-f1-muted hidden sm:inline">Formula 1 Hub</span>
+      </div>
     </div>
   </header>
 
@@ -172,7 +191,7 @@
   <!-- Footer -->
   <footer class="border-t border-f1-border mt-12 py-6">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-f1-muted">
-      <span>F1 Dashboard &mdash; Data from Jolpica F1 API &amp; Google News</span>
+      <span>THE GRID &mdash; Data from Jolpica F1 API &amp; Google News</span>
       <span>Not affiliated with Formula 1 or FIA</span>
     </div>
   </footer>
