@@ -356,7 +356,7 @@ function renderCalendar() {
   }, 300);
 }
 
-function toggleCalendarExpand(row) {
+window.toggleCalendarExpand = function(row) {
   const expand = row.querySelector('.calendar-expand');
   const chevron = row.querySelector('.calendar-chevron');
   const isOpen = !expand.classList.contains('hidden');
@@ -369,7 +369,7 @@ function toggleCalendarExpand(row) {
     expand.classList.remove('hidden');
     chevron.style.transform = 'rotate(180deg)';
   }
-}
+};
 
 function renderNextRace() {
   const infoEl = document.getElementById('next-race-info');
