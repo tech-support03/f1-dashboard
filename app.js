@@ -292,17 +292,56 @@ function renderCalendar() {
     const flag = countryFlag(race.Circuit?.Location?.country || race.raceName);
     const dateStr = raceDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-    return `
-      <div class="calendar-row ${isPast ? 'past' : ''} ${isNext ? 'next' : ''} px-4 py-3 flex items-center gap-3" ${isNext ? 'id="next-race-row"' : ''}>
-        <span class="text-xs font-bold text-f1-muted w-6 text-center">${i + 1}</span>
-        <span class="text-base w-8 text-center" aria-hidden="true">${flag}</span>
-        <div class="flex-1 min-w-0">
-          <div class="text-sm font-semibold truncate">${race.raceName}</div>
-          <div class="text-[11px] text-f1-muted truncate">${race.Circuit?.circuitName || ''}</div>
+    // Build session list for expanded view
+    const sessions = [];
+    if (race.FirstPractice) sessions.push({ name: 'FP1', ...race.FirstPractice });
+    if (race.SecondPractice) sessions.push({ name: 'FP2', ...race.SecondPractice });
+    if (race.ThirdPractice) sessions.push({ name: 'FP3', ...race.ThirdPractice });
+    if (race.SprintQualifying) sessions.push({ name: 'Sprint Quali', ...race.SprintQualifying });
+    if (race.SprintShootout) sessions.push({ name: 'Sprint Shootout', ...race.SprintShootout });
+    if (race.Sprint) sessions.push({ name: 'Sprint', ...race.Sprint });
+    if (race.Qualifying) sessions.push({ name: 'Qualifying', ...race.Qualifying });
+    sessions.push({ name: 'Race', date: race.date, time: race.time });
+    sessions.sort((a, b) => new Date(`${a.date}T${a.time || '00:00:00Z'}`) - new Date(`${b.date}T${b.time || '00:00:00Z'}`));
+
+    const sessionsHtml = sessions.map(s => {
+      const sDate = new Date(`${s.date}T${s.time || '00:00:00Z'}`);
+      const dayStr = sDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      const timeStr = s.time ? sDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }) : 'TBD';
+      const sPast = sDate < now;
+      return `
+        <div class="flex items-center justify-between py-1.5 ${sPast ? 'opacity-50' : ''}">
+          <span class="text-xs font-medium ${s.name === 'Race' ? 'text-f1-red font-bold' : ''}">${s.name}</span>
+          <div class="text-right">
+            <span class="text-[11px] text-f1-dimtext">${dayStr}</span>
+            <span class="text-[11px] font-medium ml-2">${timeStr}</span>
+          </div>
         </div>
-        <div class="text-right flex-shrink-0">
-          <div class="text-xs font-medium">${dateStr}</div>
-          ${isPast ? '<span class="text-[10px] text-f1-muted">Completed</span>' : isNext ? '<span class="text-[10px] text-f1-red font-bold">UPCOMING</span>' : ''}
+      `;
+    }).join('');
+
+    return `
+      <div class="calendar-row ${isPast ? 'past' : ''} ${isNext ? 'next' : ''} cursor-pointer" ${isNext ? 'id="next-race-row"' : ''} data-round="${i}">
+        <div class="px-4 py-3 flex items-center gap-3" onclick="toggleCalendarExpand(this.parentElement)">
+          <span class="text-xs font-bold text-f1-muted w-6 text-center">${i + 1}</span>
+          <span class="text-base w-8 text-center" aria-hidden="true">${flag}</span>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-semibold truncate">${race.raceName}</div>
+            <div class="text-[11px] text-f1-muted truncate">${race.Circuit?.circuitName || ''}</div>
+          </div>
+          <div class="text-right flex-shrink-0 flex items-center gap-2">
+            <div>
+              <div class="text-xs font-medium">${dateStr}</div>
+              ${isPast ? '<span class="text-[10px] text-f1-muted">Completed</span>' : isNext ? '<span class="text-[10px] text-f1-red font-bold">UPCOMING</span>' : ''}
+            </div>
+            <svg class="calendar-chevron w-3.5 h-3.5 text-f1-muted transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+        </div>
+        <div class="calendar-expand hidden px-4 pb-3 pt-0 ml-[3.75rem] border-t border-f1-border/50 mt-0">
+          <div class="pt-2 space-y-0">
+            <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-f1-muted mb-1.5">Session Schedule (Your Local Time)</div>
+            ${sessionsHtml}
+          </div>
         </div>
       </div>
     `;
@@ -315,6 +354,21 @@ function renderCalendar() {
     const nextRow = document.getElementById('next-race-row');
     if (nextRow) nextRow.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }, 300);
+}
+
+function toggleCalendarExpand(row) {
+  const expand = row.querySelector('.calendar-expand');
+  const chevron = row.querySelector('.calendar-chevron');
+  const isOpen = !expand.classList.contains('hidden');
+
+  // Close all other expanded rows
+  document.querySelectorAll('.calendar-expand').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.calendar-chevron').forEach(el => el.style.transform = '');
+
+  if (!isOpen) {
+    expand.classList.remove('hidden');
+    chevron.style.transform = 'rotate(180deg)';
+  }
 }
 
 function renderNextRace() {
